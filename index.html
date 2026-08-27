@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIBTRICK — a library that files itself</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ===== Header ===== -->
+  <header class="masthead">
+    <div class="masthead-left">
+      <span class="mark">LIBTRICK</span>
+      <span class="mark-sub">self&#8209;filing PDF library</span>
+    </div>
+    <div class="masthead-search">
+      <input type="text" id="searchInput" placeholder="Search titles, tags, contents…" autocomplete="off">
+      <kbd>/</kbd>
+    </div>
+    <div class="masthead-right">
+      <button class="btn-ghost" id="statsToggle" type="button">Shelf stats</button>
+      <button class="btn-solid" id="headerAddBtn" type="button">Add PDFs</button>
+    </div>
+  </header>
+
+  <!-- ===== Hero ===== -->
+  <section class="hero">
+    <div class="hero-text">
+      <p class="eyebrow">No folders. No filing. No forgetting.</p>
+      <h1>Drop a PDF in.<br>It catalogues <em>itself</em>.</h1>
+      <p class="hero-sub">LIBTRICK reads what you upload, assigns a call number, guesses the subject, pulls out keywords, and shelves it — the way a librarian would, minus the wait.</p>
+    </div>
+
+    <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload PDFs">
+      <div class="dz-stamp" aria-hidden="true">
+        <svg viewBox="0 0 100 100" class="dz-stamp-ring">
+          <circle cx="50" cy="50" r="46"></circle>
+        </svg>
+        <span class="dz-plus">+</span>
+      </div>
+      <p class="dz-title">Drop PDFs here</p>
+      <p class="dz-sub">or click to browse — processed entirely on this device</p>
+      <input type="file" id="fileInput" accept="application/pdf" multiple hidden>
+    </div>
+  </section>
+
+  <!-- ===== Processing queue (appears while cataloguing) ===== -->
+  <section class="queue" id="queue" hidden>
+    <p class="queue-label">Cataloguing</p>
+    <ul class="queue-list" id="queueList"></ul>
+  </section>
+
+  <!-- ===== Stats strip ===== -->
+  <section class="stats-strip" id="statsStrip" hidden>
+    <div class="stat"><span class="stat-num" id="statTotal">0</span><span class="stat-label">volumes</span></div>
+    <div class="stat"><span class="stat-num" id="statCategories">0</span><span class="stat-label">subjects</span></div>
+    <div class="stat"><span class="stat-num" id="statTags">0</span><span class="stat-label">keywords indexed</span></div>
+    <div class="stat"><span class="stat-num" id="statSize">0</span><span class="stat-label">stored on device</span></div>
+  </section>
+
+  <!-- ===== Main: drawer sidebar + card grid ===== -->
+  <main class="reading-room">
+
+    <aside class="drawers" id="drawers" aria-label="Filter by subject">
+      <p class="drawers-title">Drawers</p>
+      <ul class="drawer-list" id="drawerList">
+        <li><button class="drawer-tab active" data-cat="all">All volumes<span class="drawer-count" id="countAll">0</span></button></li>
+      </ul>
+      <p class="drawers-title drawers-title-sort">Sort</p>
+      <select id="sortSelect" class="sort-select">
+        <option value="added-desc">Newest added</option>
+        <option value="added-asc">Oldest added</option>
+        <option value="title-asc">Title A–Z</option>
+        <option value="category-asc">Subject A–Z</option>
+      </select>
+    </aside>
+
+    <section class="catalog">
+      <div class="catalog-grid" id="catalogGrid"></div>
+
+      <div class="empty-state" id="emptyState">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+          <path d="M14 8h24l12 12v36H14V8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M38 8v12h12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+        <h3>The shelf is empty</h3>
+        <p>Add a PDF above and LIBTRICK will read it, tag it, and give it a place.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="colophon">
+    <span>LIBTRICK — everything stays on this device. Nothing is uploaded anywhere.</span>
+  </footer>
+</div>
+
+<!-- ===== Detail panel (slide-over) ===== -->
+<div class="scrim" id="scrim" hidden></div>
+<aside class="detail-panel" id="detailPanel" hidden aria-label="Document detail">
+  <button class="detail-close" id="detailClose" aria-label="Close">&times;</button>
+  <div class="detail-inner" id="detailInner"></div>
+</aside>
+
+<!-- pdf.js for on-device text extraction -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
